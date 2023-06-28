@@ -1,4 +1,4 @@
-package logdk
+package logsdk
 
 import (
 	"fmt"

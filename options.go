@@ -1,4 +1,4 @@
-package logdk
+package logsdk
 
 // Options 日志可选配置
 type Options struct {
