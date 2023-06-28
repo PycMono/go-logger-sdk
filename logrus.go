@@ -51,43 +51,45 @@ func NewLogrus(opts Options) Logger {
 }
 
 // Debug logs a message at level Debug on the standard logger
-func (l Logrus) Debug(ctx context.Context, message string, fields Fields) {
-	l.logger.WithContext(ctx).WithFields(l.prepare(ctx, fields)).Debug(message)
+func (l Logrus) Debug(ctx context.Context, message string, fields ...Fields) {
+	l.logger.WithContext(ctx).WithFields(l.prepare(ctx, fields...)).Debug(message)
 }
 
 // Error logs a message at level Error on the standard logger
-func (l Logrus) Error(ctx context.Context, message string, fields Fields) {
-	l.logger.WithContext(ctx).WithFields(l.prepare(ctx, fields)).Error(message)
+func (l Logrus) Error(ctx context.Context, message string, fields ...Fields) {
+	l.logger.WithContext(ctx).WithFields(l.prepare(ctx, fields...)).Error(message)
 }
 
 // Info logs a message at level Info on the standard logger
-func (l Logrus) Info(ctx context.Context, message string, fields Fields) {
-	l.logger.WithContext(ctx).WithFields(l.prepare(ctx, fields)).Info(message)
+func (l Logrus) Info(ctx context.Context, message string, fields ...Fields) {
+	l.logger.WithContext(ctx).WithFields(l.prepare(ctx, fields...)).Info(message)
 }
 
 // Warning logs a message at level Warning on the standard logger
-func (l Logrus) Warning(ctx context.Context, message string, fields Fields) {
-	l.logger.WithContext(ctx).WithFields(l.prepare(ctx, fields)).Debug(message)
+func (l Logrus) Warning(ctx context.Context, message string, fields ...Fields) {
+	l.logger.WithContext(ctx).WithFields(l.prepare(ctx, fields...)).Debug(message)
 }
 
 // Fatal logs a message at level Fatal on the standard logger then the process will exit with status set to 1
-func (l Logrus) Fatal(ctx context.Context, message string, fields Fields) {
-	l.logger.WithContext(ctx).WithFields(l.prepare(ctx, fields)).Fatal(message)
+func (l Logrus) Fatal(ctx context.Context, message string, fields ...Fields) {
+	l.logger.WithContext(ctx).WithFields(l.prepare(ctx, fields...)).Fatal(message)
 }
 
 // Panic logs a message at level Panic on the standard logger
-func (l Logrus) Panic(ctx context.Context, message string, fields Fields) {
-	l.logger.WithContext(ctx).WithFields(l.prepare(ctx, fields)).Panic(message)
+func (l Logrus) Panic(ctx context.Context, message string, fields ...Fields) {
+	l.logger.WithContext(ctx).WithFields(l.prepare(ctx, fields...)).Panic(message)
 }
 
 // 日志打印前做数据准备和补充
-func (l Logrus) prepare(ctx context.Context, fields Fields) logrus.Fields {
+func (l Logrus) prepare(ctx context.Context, fields ...Fields) logrus.Fields {
 	// todo 彭亚川从ctx中获取上下文信息
-	fields["module"] = l.module
-	fields = fields.format() // 格式化数据
 	out := make(logrus.Fields, len(fields))
-	for k, v := range fields {
-		out[k] = v
+	out["module"] = l.module
+	for _, v := range fields {
+		vv := v.format()
+		for k, v := range vv {
+			out[k] = v
+		}
 	}
 	return out
 }

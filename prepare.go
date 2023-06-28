@@ -18,28 +18,28 @@ func SetLogger(logger Logger) {
 }
 
 // Debug logs a message at level Debug on the standard logger
-func Debug(ctx context.Context, message string, fields Fields) {
-	defaultLogger.Debug(ctx, message, fields)
+func Debug(ctx context.Context, message string, fields ...Fields) {
+	defaultLogger.Debug(ctx, message, fields...)
 }
 
 // Error logs a message at level Error on the standard logger
-func Error(ctx context.Context, message string, fields Fields) {
-	defaultLogger.Error(ctx, message, fields)
+func Error(ctx context.Context, message string, fields ...Fields) {
+	defaultLogger.Error(ctx, message, fields...)
 }
 
 // Info logs a message at level Info on the standard logger
-func Info(ctx context.Context, message string, fields Fields) {
-	defaultLogger.Info(ctx, message, fields)
+func Info(ctx context.Context, message string, fields ...Fields) {
+	defaultLogger.Info(ctx, message, fields...)
 }
 
 // Warning logs a message at level Warning on the standard logger
-func Warning(ctx context.Context, message string, fields Fields) {
-	defaultLogger.Warning(ctx, message, fields)
+func Warning(ctx context.Context, message string, fields ...Fields) {
+	defaultLogger.Warning(ctx, message, fields...)
 }
 
 // Fatal logs a message at level Fatal on the standard logger then the process will exit with status set to 1
-func Fatal(ctx context.Context, message string, fields Fields) {
-	defaultLogger.Fatal(ctx, message, fields)
+func Fatal(ctx context.Context, message string, fields ...Fields) {
+	defaultLogger.Fatal(ctx, message, fields...)
 }
 
 // Panic panic 日志，调用此方法后会触发panic捕获并且打印日志，外部无需再次捕获Panic 若未触发Panic不会打印日志
