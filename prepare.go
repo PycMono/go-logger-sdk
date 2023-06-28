@@ -46,6 +46,6 @@ func Fatal(ctx context.Context, message string, fields Fields) {
 func Panic(ctx context.Context) {
 	if err := recover(); err != nil {
 		er := fmt.Errorf("[panic error] %+v", err)
-		defaultLogger.Panic(ctx, "应用触发Panic", New().WithErr(er).WithAny("stack", debug.Stack()))
+		defaultLogger.Panic(ctx, "应用触发Panic", N().Err(er).Any("stack", debug.Stack()))
 	}
 }

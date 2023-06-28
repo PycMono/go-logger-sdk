@@ -12,32 +12,32 @@ import (
 // Fields fields
 type Fields map[string]interface{}
 
-// New 构建Fields对象
-func New() Fields {
+// N 构建Fields对象
+func N() Fields {
 	return Fields{}
 }
 
-// WithErr 快捷设置错误日志
-func (f Fields) WithErr(err error) Fields {
+// Err 快捷设置错误日志
+func (f Fields) Err(err error) Fields {
 	f["error"] = err
 	return f
 }
 
-// WithErrStack 快捷设置错误日志
-func (f Fields) WithErrStack(errStack string) Fields {
+// ErrStack 快捷设置错误日志
+func (f Fields) ErrStack(errStack string) Fields {
 	f["errorsStack"] = errStack
 	return f
 }
 
-// WithAny 快捷设置任意日志
-func (f Fields) WithAny(k string, v interface{}) Fields {
+// Any 快捷设置任意日志
+func (f Fields) Any(k string, v interface{}) Fields {
 	f[k] = v
 	return f
 }
 
 // format 格式化数据
 func (f Fields) format() Fields {
-	out := New()
+	out := N()
 	for k, v := range f {
 		switch v.(type) {
 		case error:
@@ -45,7 +45,7 @@ func (f Fields) format() Fields {
 
 			// go-errors 追加错误栈
 			if er, ok := v.(*errors.Error); ok {
-				out.WithErrStack(er.ErrorStack())
+				out.ErrStack(er.ErrorStack())
 				break // 跳出本次循环
 			}
 
@@ -55,26 +55,26 @@ func (f Fields) format() Fields {
 			e = errors.Wrap(e, 1)
 			verbose := fmt.Sprintf("%+v", e)
 			if verbose != base && k == "error" {
-				out.WithAny("error", verbose)
+				out.Any("error", verbose)
 			}
 			if verbose != base && k != "error" {
-				out.WithAny("errorsStack", verbose)
+				out.Any("errorsStack", verbose)
 			}
 
 		case []byte:
-			out.WithAny(k, string(v.([]byte)))
+			out.Any(k, string(v.([]byte)))
 		case time.Duration:
-			out.WithAny(k, v.(time.Duration).String())
+			out.Any(k, v.(time.Duration).String())
 		case time.Time:
-			out.WithAny(k, v.(time.Time).Format(time.RFC3339))
+			out.Any(k, v.(time.Time).Format(time.RFC3339))
 		case bool, int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64, float32, float64, complex64, complex128: // 基础类型以原样格式输出
-			out.WithAny(k, v)
+			out.Any(k, v)
 		default:
 			if reflect.ValueOf(v).Kind() == reflect.String {
-				out.WithAny(k, v)
+				out.Any(k, v)
 			} else {
 				fStr, _ := json.Marshal(v) // 其他类型统一转换为json字符串
-				out.WithAny(k, string(fStr))
+				out.Any(k, string(fStr))
 			}
 		}
 	}
