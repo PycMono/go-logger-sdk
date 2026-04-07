@@ -4,9 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/go-errors/errors"
 	"reflect"
 	"time"
+
+	"github.com/go-errors/errors"
 )
 
 // Fields fields
@@ -33,6 +34,10 @@ func (f Fields) ErrStack(errStack string) Fields {
 func (f Fields) Any(k string, v interface{}) Fields {
 	f[k] = v
 	return f
+}
+
+func Any(k string, v interface{}) Fields {
+	return Fields{k: v}
 }
 
 // format 格式化数据

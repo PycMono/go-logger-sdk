@@ -1,6 +1,6 @@
-module github.com/PycMono/go-logger-sdk
+module PycMono/github/go-logger-sdk
 
-go 1.20
+go 1.25.0
 
 require (
 	github.com/go-errors/errors v1.4.2
