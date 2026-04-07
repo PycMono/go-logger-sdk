@@ -1,4 +1,4 @@
-module PycMono/github/go-logger-sdk
+module github.com/PycMono/go-logger-sdk
 
 go 1.25.0
 
