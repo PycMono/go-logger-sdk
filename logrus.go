@@ -2,12 +2,13 @@ package logsdk
 
 import (
 	"context"
-	"github.com/sirupsen/logrus"
 	"os"
+
+	"github.com/sirupsen/logrus"
 )
 
-// Logrus 定时日志logrus
-type Logrus struct {
+// Loggers 定时日志logrus
+type Loggers struct {
 	logger *logrus.Logger
 	module string
 }
@@ -43,7 +44,7 @@ func newLogger(logFormat string) *logrus.Logger {
 
 // NewLogrus 日志初始化
 func NewLogrus(opts Options) Logger {
-	l := &Logrus{
+	l := &Loggers{
 		logger: newLogger(opts.LogFormat),
 		module: opts.Module,
 	}
@@ -51,37 +52,37 @@ func NewLogrus(opts Options) Logger {
 }
 
 // Debug logs a message at level Debug on the standard logger
-func (l Logrus) Debug(ctx context.Context, message string, fields ...Fields) {
+func (l Loggers) Debug(ctx context.Context, message string, fields ...Fields) {
 	l.logger.WithContext(ctx).WithFields(l.prepare(ctx, fields...)).Debug(message)
 }
 
 // Error logs a message at level Error on the standard logger
-func (l Logrus) Error(ctx context.Context, message string, fields ...Fields) {
+func (l Loggers) Error(ctx context.Context, message string, fields ...Fields) {
 	l.logger.WithContext(ctx).WithFields(l.prepare(ctx, fields...)).Error(message)
 }
 
 // Info logs a message at level Info on the standard logger
-func (l Logrus) Info(ctx context.Context, message string, fields ...Fields) {
+func (l Loggers) Info(ctx context.Context, message string, fields ...Fields) {
 	l.logger.WithContext(ctx).WithFields(l.prepare(ctx, fields...)).Info(message)
 }
 
-// Warning logs a message at level Warning on the standard logger
-func (l Logrus) Warning(ctx context.Context, message string, fields ...Fields) {
+// Warn logs a message at level Warning on the standard logger
+func (l Loggers) Warn(ctx context.Context, message string, fields ...Fields) {
 	l.logger.WithContext(ctx).WithFields(l.prepare(ctx, fields...)).Debug(message)
 }
 
 // Fatal logs a message at level Fatal on the standard logger then the process will exit with status set to 1
-func (l Logrus) Fatal(ctx context.Context, message string, fields ...Fields) {
+func (l Loggers) Fatal(ctx context.Context, message string, fields ...Fields) {
 	l.logger.WithContext(ctx).WithFields(l.prepare(ctx, fields...)).Fatal(message)
 }
 
 // Panic logs a message at level Panic on the standard logger
-func (l Logrus) Panic(ctx context.Context, message string, fields ...Fields) {
+func (l Loggers) Panic(ctx context.Context, message string, fields ...Fields) {
 	l.logger.WithContext(ctx).WithFields(l.prepare(ctx, fields...)).Panic(message)
 }
 
 // 日志打印前做数据准备和补充
-func (l Logrus) prepare(ctx context.Context, fields ...Fields) logrus.Fields {
+func (l Loggers) prepare(ctx context.Context, fields ...Fields) logrus.Fields {
 	// todo 彭亚川从ctx中获取上下文信息
 	out := make(logrus.Fields, len(fields))
 	out["module"] = l.module

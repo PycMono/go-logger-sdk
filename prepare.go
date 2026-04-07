@@ -32,9 +32,9 @@ func Info(ctx context.Context, message string, fields ...Fields) {
 	defaultLogger.Info(ctx, message, fields...)
 }
 
-// Warning logs a message at level Warning on the standard logger
-func Warning(ctx context.Context, message string, fields ...Fields) {
-	defaultLogger.Warning(ctx, message, fields...)
+// Warn logs a message at level Warning on the standard logger
+func Warn(ctx context.Context, message string, fields ...Fields) {
+	defaultLogger.Warn(ctx, message, fields...)
 }
 
 // Fatal logs a message at level Fatal on the standard logger then the process will exit with status set to 1

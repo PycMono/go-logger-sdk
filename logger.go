@@ -10,8 +10,8 @@ type Logger interface {
 	Error(ctx context.Context, message string, fields ...Fields)
 	// Info logs a message at level Info on the standard logger
 	Info(ctx context.Context, message string, fields ...Fields)
-	// Warning logs a message at level Warning on the standard logger
-	Warning(ctx context.Context, message string, fields ...Fields)
+	// Warn logs a message at level Warning on the standard logger
+	Warn(ctx context.Context, message string, fields ...Fields)
 	// Fatal logs a message at level Fatal on the standard logger then the process will exit with status set to 1
 	Fatal(ctx context.Context, message string, fields ...Fields)
 	// Panic logs a message at level Panic on the standard logger
