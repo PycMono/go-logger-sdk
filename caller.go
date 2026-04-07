@@ -26,7 +26,10 @@ func (f *Caller) Format(entry *logrus.Entry) ([]byte, error) {
 	function, file, line := f.getCurrentPosition(entry)
 
 	packageEnd := strings.LastIndex(function, ".")
-	functionName := function[packageEnd+1:]
+	functionName := function
+	if packageEnd >= 0 {
+		functionName = function[packageEnd+1:]
+	}
 
 	caller := fmt.Sprintf("%s[%s:%d]", functionName, filepath.Base(file), line)
 	data := logrus.Fields{CallerKey: caller} // 设置caller字段
@@ -44,10 +47,19 @@ func (f *Caller) getCurrentPosition(entry *logrus.Entry) (string, string, int) {
 		skip = fieldsStackJump
 	}
 start:
-	pc, file, line, _ := runtime.Caller(skip)
-	function := runtime.FuncForPC(pc).Name()
-	if strings.LastIndex(function, "sirupsen/logrus.") >= 0 ||
-		strings.LastIndex(function, "log/logrusx.") >= 0 {
+	pc, file, line, ok := runtime.Caller(skip)
+	if !ok {
+		return "unknown", "unknown", 0
+	}
+
+	fn := runtime.FuncForPC(pc)
+	if fn == nil {
+		return "unknown", file, line
+	}
+
+	function := fn.Name()
+	if strings.Contains(function, "sirupsen/logrus.") ||
+		strings.Contains(function, "log/logrusx.") {
 		skip++
 		goto start
 	}

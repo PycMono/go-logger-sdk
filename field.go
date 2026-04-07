@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"reflect"
 	"time"
 
 	"github.com/go-errors/errors"
@@ -36,13 +35,18 @@ func Any(k string, v interface{}) Fields {
 func (f Fields) format() Fields {
 	out := N()
 	for k, v := range f {
+		if v == nil {
+			out[k] = nil
+			continue
+		}
+
 		switch v.(type) {
 		case error:
 			out[k] = v
 
 			// go-errors 追加错误栈
 			if er, ok := v.(*errors.Error); ok {
-				ErrStack(er.ErrorStack())
+				out["errorsStack"] = er.ErrorStack()
 				break // 跳出本次循环
 			}
 
@@ -52,26 +56,26 @@ func (f Fields) format() Fields {
 			e = errors.Wrap(e, 1)
 			verbose := fmt.Sprintf("%+v", e)
 			if verbose != base && k == "error" {
-				Any("error", verbose)
+				out["error"] = verbose
 			}
 			if verbose != base && k != "error" {
-				Any("errorsStack", verbose)
+				out["errorsStack"] = verbose
 			}
 
 		case []byte:
-			Any(k, string(v.([]byte)))
+			out[k] = string(v.([]byte))
 		case time.Duration:
-			Any(k, v.(time.Duration).String())
+			out[k] = v.(time.Duration).String()
 		case time.Time:
-			Any(k, v.(time.Time).Format(time.RFC3339))
+			out[k] = v.(time.Time).Format(time.RFC3339)
 		case bool, int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64, float32, float64, complex64, complex128: // 基础类型以原样格式输出
-			Any(k, v)
+			out[k] = v
 		default:
-			if reflect.ValueOf(v).Kind() == reflect.String {
-				Any(k, v)
+			if s, ok := v.(string); ok {
+				out[k] = s
 			} else {
 				fStr, _ := json.Marshal(v) // 其他类型统一转换为json字符串
-				Any(k, string(fStr))
+				out[k] = string(fStr)
 			}
 		}
 	}
